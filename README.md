@@ -4,6 +4,11 @@
 
 Ce projet fournit une solution complète pour connecter les importateurs africains aux fournisseurs chinois, avec analyse de marges automatisée et matching intelligent.
 
+### ✨ Nouvelles fonctionnalités
+- 🤖 **Scraping automatique** des sites e-commerce africains (Jumia, CoinAfrique, Expat-Dakar)
+- 🧠 **IA Embeddings** avec Sentence Transformers pour regrouper les produits similaires
+- 📊 **Clustering intelligent** pour fusionner les doublons
+
 ---
 
 ## 📁 Structure du Projet
@@ -21,6 +26,21 @@ acbc_project/
 │       ├── smart-matching/
 │       ├── send-whatsapp/
 │       └── generate-report/
+│
+├── scraper/                     # 🆕 Scraping + IA
+│   ├── main.py                  # Point d'entrée
+│   ├── config.py                # Configuration sites & IA
+│   ├── scrapers/                # Scrapers par site
+│   │   ├── base_scraper.py
+│   │   ├── jumia_scraper.py
+│   │   ├── coinafrique_scraper.py
+│   │   └── expat_dakar_scraper.py
+│   ├── ai/                      # Intelligence Artificielle
+│   │   ├── embeddings.py        # Sentence Transformers
+│   │   └── clustering.py        # Regroupement produits
+│   └── utils/
+│       ├── database.py          # Connexion Supabase
+│       └── helpers.py           # Fonctions utilitaires
 │
 └── flutter_app/                 # Application Mobile Flutter
     ├── lib/
@@ -116,6 +136,55 @@ flutter run -d android
 # Web
 flutter run -d chrome
 ```
+
+
+
+## 🤖 Scraping + IA (NOUVEAU)
+
+### Installation du scraper
+
+```bash
+cd scraper
+pip install -r requirements.txt
+```
+
+### Configuration
+
+1. Copiez `.env.example` en `.env`
+2. Ajoutez vos credentials Supabase :
+```
+SUPABASE_URL=https://xxx.supabase.co
+SUPABASE_KEY=your_anon_key
+SUPABASE_SERVICE_KEY=your_service_key
+```
+
+### Exécution
+
+```bash
+python main.py
+```
+
+### Ce que fait le scraper :
+
+1. **Scrape** les sites africains (Jumia 8 pays, CoinAfrique, Expat-Dakar)
+2. **Génère des embeddings** avec Sentence Transformers (IA multilingue)
+3. **Regroupe les produits similaires** avec DBSCAN clustering
+4. **Sauvegarde** les données uniques dans Supabase
+
+### Automatisation (Cron)
+
+```bash
+# Tous les jours à 6h du matin
+0 6 * * * cd /path/to/scraper && python main.py >> /var/log/acbc_scraper.log 2>&1
+```
+
+### Sites scrapés
+
+| Site | Pays | Catégories |
+|------|------|------------|
+| Jumia | Sénégal, Côte d'Ivoire, Cameroun, Nigeria, Kenya, Ghana, Maroc, Égypte | Toutes |
+| CoinAfrique | Sénégal, Côte d'Ivoire | Petites annonces |
+| Expat-Dakar | Sénégal | Petites annonces |
 
 ---
 
