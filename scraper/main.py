@@ -12,6 +12,8 @@ from config import SITES_CONFIG, AI_CONFIG
 from scrapers.jumia_scraper import JumiaScraper
 from scrapers.coinafrique_scraper import CoinAfriqueScraper
 from scrapers.expat_dakar_scraper import ExpatDakarScraper
+from scrapers.jiji_scraper import JijiScraper
+from scrapers.generic_scraper import GenericScraper
 from ai.embeddings import embedding_generator
 from ai.clustering import product_clusterer
 from utils.database import db
@@ -37,8 +39,11 @@ def get_scraper_for_site(site_key: str, site_config: Dict):
         return CoinAfriqueScraper(site_config)
     elif 'expat' in site_key:
         return ExpatDakarScraper(site_config)
+    elif 'jiji' in site_key:
+        return JijiScraper(site_config)
     else:
-        return None
+        # Scraper générique pour les autres sites
+        return GenericScraper(site_config)
 
 
 def run_scraping() -> List[Dict]:
@@ -55,9 +60,6 @@ def run_scraping() -> List[Dict]:
             continue
         
         scraper = get_scraper_for_site(site_key, site_config)
-        if not scraper:
-            logger.warning(f"[{site_key}] Pas de scraper disponible")
-            continue
         
         try:
             products = scraper.scrape()
